@@ -11,7 +11,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import br.com.plataforma_rivalix_back.plataforma_rivalix.filter.SimpleFilter;
 
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,7 +34,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated());
         // aqui você encaixa seu filtro JWT (SimpleFilter) depois do cors()
-        http.addFilterBefore(new SimpleFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
