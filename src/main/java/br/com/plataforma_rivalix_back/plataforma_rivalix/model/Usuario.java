@@ -42,8 +42,8 @@ public class Usuario {
 	private String email;
 
 	//@Size(min = 8, max = 30, message = "A senha deve ter entre 8 e 30 caracteres")
-	//@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+=\\-\\[\\]{};':\"|,.<>/?]).*$", message = "A senha deve conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.")
 	@NotBlank(message = "A senha é obrigatória")
+	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+=\\-\\[\\]{};':\"|,.<>/?]).*$", message = "A senha deve conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.")
 	@Column(name = "senha", columnDefinition = "TEXT", nullable = false)
 	private String senha;
 }
