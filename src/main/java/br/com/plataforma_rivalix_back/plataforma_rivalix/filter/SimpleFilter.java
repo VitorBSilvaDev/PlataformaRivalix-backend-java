@@ -18,100 +18,39 @@ import jakarta.servlet.http.HttpServletResponse;
 // Filtra cada requisição antes de passar para o controller, solicitando token para endpoints privados 
 
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE) // Garante que este filtro rode antes de outros filtros de segurança
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class SimpleFilter implements Filter {
-
-/*     // Injetando a origem permitida do application.properties para ser mais flexível
-    @Value("${cors.allowed-origins}")
-    private String allowedOriginsConfig; */
-
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        
-       /*  // --- Adicionar cabeçalhos CORS para todas as requisições (crucial para preflight) ---
-        // Pega o Origin da requisição
-        String origin = httpRequest.getHeader("Origin");
-        
-     // Verifica se o Origin da requisição está entre os Origins permitidos
-        // O allowedOriginsConfig é uma string separada por vírgulas, então precisamos verificar se contém o origin
-        if (origin != null) {
-            // Divide a string de allowedOriginsConfig em um array para verificar cada um
-            String[] allowedOriginsArray = allowedOriginsConfig.split(",");
-            boolean isAllowedOrigin = false;
-            for (String allowedOrigin : allowedOriginsArray) {
-                if (allowedOrigin.trim().equals(origin)) {
-                    isAllowedOrigin = true;
-                    break;
-                }
-            }
+        HttpServletRequest  request  = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) res;
 
-            if (isAllowedOrigin) {
-                httpResponse.setHeader("Access-Control-Allow-Origin", origin);
-                httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-                httpResponse.setHeader("Access-Control-Allow-Headers", "*"); // Permite todos os headers, ou liste os específicos do seu frontend
-                httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
-                httpResponse.setHeader("Access-Control-Max-Age", "3600"); // Cacheia a pré-checagem por 1 hora
-            } else {
-                // Opcional: Se o Origin não for permitido, você pode logar ou rejeitar aqui,
-                // mas o CorsFilter do Spring já faria isso se a requisição passasse.
-            }
-        } */
-        // -----------------------------------------------------------------------
-
-
-        String path = httpRequest.getRequestURI();
-        String method = httpRequest.getMethod();
-
-        // ========================================================================
-        // REGRA 0: Se a requisição for OPTIONS, ela é uma checagem de preflight do CORS.
-        // Já adicionamos os headers acima, então apenas retornamos OK.
-        // ========================================================================
-        if ("OPTIONS".equalsIgnoreCase(method)) {
-            httpResponse.setStatus(HttpServletResponse.SC_OK);
-            return; // Permite e sai do filtro
-        }
-
-        // ========================================================================
-        // REGRA 1: Permite o LOGIN (POST /api/auth/login) SEM token
-        // ========================================================================
-        if (path.equals("/api/auth/login") && method.equals("POST")) {
-            chain.doFilter(request, response);
+        // Preflight é liberado pelo CorsConfigurationSource
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
             return;
         }
 
-        // ========================================================================
-        // REGRA 2: Permite o CADASTRO (POST /api/auth/register) SEM token
-        // ========================================================================
-        if (path.equals("/api/auth/register") && method.equals("POST")) {
-            chain.doFilter(request, response);
-            return;
-        }
-        
-        // Exemplo para permitir GET de todos os usuários sem token (se necessário)
-        if (path.equals("/usuarios") && method.equals("GET")) {
-            chain.doFilter(request, response);
+        // endpoints públicos
+        String path   = request.getRequestURI();
+        String method = request.getMethod();
+        if (path.startsWith("/api/auth/") && ("POST".equals(method))) {
+            chain.doFilter(req, res);
             return;
         }
 
-        // ========================================================================
-        // REGRA GERAL: Para todas as OUTRAS requisições, exige um token
-        // ========================================================================
-        String authToken = httpRequest.getHeader("Authorization");
-
-        if (authToken != null && authToken.startsWith("Bearer ")) {
-            String token = authToken.substring(7);
-
+        // JWT no header
+        String auth = request.getHeader("Authorization");
+        if (auth != null && auth.startsWith("Bearer ")) {
+            String token = auth.substring(7);
             if (!token.isEmpty()) {
-                chain.doFilter(request, response);
+                chain.doFilter(req, res);
                 return;
             }
         }
-        
-        // SE CHEGAR AQUI: Acesso não autorizado.
-        httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // HTTP 401 Unauthorized
-        httpResponse.getWriter().write("Acesso não autorizado. Token ausente ou inválido.");
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write("Acesso não autorizado. Token ausente ou inválido.");
     }
 }
