@@ -9,12 +9,22 @@ import org.springframework.beans.factory.annotation.Value;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+    @Value("${cors.allowed-origins}") // definindo variável de ambiente que está dentro do applications.properties
+    private String allowedOrigins;
+
+    // CORS(Cross-Origin Resource Sharing) diz ao navegador quais outras origens
+    // possuem permissão para enviar requisições á essa aplicação
     @Override
-    public void addCorsMappings(CorsRegistry registry) {
-      registry.addMapping("/**")
-              .allowedOrigins("*")    // ou allowedOriginPatterns("*")
-              .allowedMethods("*")
-              .allowedHeaders("*")
-              .allowCredentials(false); // ← aqui
+    public void addCorsMappings(@NonNull CorsRegistry registry) {
+        String[] origins = java.util.Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .toArray(String[]::new);
+
+        registry.addMapping("/**")
+                .allowedOrigins(origins)
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
     }
 }
