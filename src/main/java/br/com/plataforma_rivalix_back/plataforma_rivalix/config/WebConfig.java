@@ -16,14 +16,10 @@ public class WebConfig implements WebMvcConfigurer {
     // CORS(Cross-Origin Resource Sharing) diz ao navegador quais outras origens
     // possuem permissão para enviar requisições á essa aplicação
     @Override
-    public void addCorsMappings(@NonNull CorsRegistry registry) {
-        String[] origins = java.util.Arrays.stream(allowedOrigins.split(","))
-                .map(String::trim)
-                .toArray(String[]::new);
-
+    public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(origins)
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedOriginPatterns("*") // <— aqui
+                .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
