@@ -47,15 +47,18 @@ public class UsuarioService {
 
 	@Transactional
 	public Usuario criarUsuario(Usuario usuario) {
+		System.out.println("DEBUG: Comprimento da senha recebida: " + usuario.getSenha().length());
+
 		if (repository.findByEmail(usuario.getEmail()).isPresent()) {
 			// Lançar ResponseStatusException com a mensagem desejada
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "Este e-mail já está cadastrado.");
 		}
-		
+
 		// NOVA VERIFICAÇÃO PARA nomeUsuario
-        if (repository.findByNomeUsuario(usuario.getNomeUsuario()).isPresent()) { // Você precisará criar findByNomeUsuario no seu IUsuario
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Este nome de usuário já está em uso.");
-        }
+		if (repository.findByNomeUsuario(usuario.getNomeUsuario()).isPresent()) { // Você precisará criar
+																					// findByNomeUsuario no seu IUsuario
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Este nome de usuário já está em uso.");
+		}
 
 		String senhaCriptografada = this.passwordEncoder.encode(usuario.getSenha());
 		usuario.setSenha(senhaCriptografada);
@@ -100,17 +103,17 @@ public class UsuarioService {
 		}
 		// Se chegou aqui, as credenciais são válidas.
 		// O token JWT será gerado no controller, ou você pode gerá-lo aqui e retornar.
-		 long agora = System.currentTimeMillis();
-		    long expiracao = agora + 3600000; // Expira em 1 hora
+		long agora = System.currentTimeMillis();
+		long expiracao = agora + 3600000; // Expira em 1 hora
 
-		    String jwtToken = Jwts.builder()
-		            .setSubject(email) // O subject geralmente é o identificador único do usuário
-		            .setIssuedAt(new Date(agora))
-		            .setExpiration(new Date(expiracao))
-		            .signWith(SecurityConstants.CHAVE_SECRETA) // Use a chave secreta
-		            .compact();
+		String jwtToken = Jwts.builder()
+				.setSubject(email) // O subject geralmente é o identificador único do usuário
+				.setIssuedAt(new Date(agora))
+				.setExpiration(new Date(expiracao))
+				.signWith(SecurityConstants.CHAVE_SECRETA) // Use a chave secreta
+				.compact();
 
-		    return jwtToken; // Retorne o JWT gerado
+		return jwtToken; // Retorne o JWT gerado
 	}
 
 	/*
