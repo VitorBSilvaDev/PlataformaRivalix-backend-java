@@ -3,7 +3,7 @@ package br.com.plataforma_rivalix_back.plataforma_rivalix.filter;
 import java.io.IOException;
 
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Value;
+/* import org.springframework.beans.factory.annotation.Value;*/
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
@@ -21,9 +21,9 @@ import jakarta.servlet.http.HttpServletResponse;
 @Order(Ordered.HIGHEST_PRECEDENCE) // Garante que este filtro rode antes de outros filtros de segurança
 public class SimpleFilter implements Filter {
 
-    // Injetando a origem permitida do application.properties para ser mais flexível
+/*     // Injetando a origem permitida do application.properties para ser mais flexível
     @Value("${cors.allowed-origins}")
-    private String allowedOriginsConfig;
+    private String allowedOriginsConfig; */
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -31,7 +31,7 @@ public class SimpleFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         
-        // --- Adicionar cabeçalhos CORS para todas as requisições (crucial para preflight) ---
+       /*  // --- Adicionar cabeçalhos CORS para todas as requisições (crucial para preflight) ---
         // Pega o Origin da requisição
         String origin = httpRequest.getHeader("Origin");
         
@@ -58,7 +58,7 @@ public class SimpleFilter implements Filter {
                 // Opcional: Se o Origin não for permitido, você pode logar ou rejeitar aqui,
                 // mas o CorsFilter do Spring já faria isso se a requisição passasse.
             }
-        }
+        } */
         // -----------------------------------------------------------------------
 
 
