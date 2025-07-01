@@ -23,18 +23,15 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // Adicione este bean:
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors() // Habilita CORS
-            .and()
-            .csrf().disable();
-        // ...outras configurações de segurança...
+            .cors(cors -> {}) // ou .cors(Customizer.withDefaults())
+            .csrf(csrf -> csrf.disable());
+        // ...outras configurações...
         return http.build();
     }
 
-    // Adicione este bean para usar as origens do seu properties:
     @Value("${cors.allowed-origins}")
     private String allowedOrigins;
 
@@ -50,4 +47,3 @@ public class SecurityConfig {
         return source;
     }
 }
-// ...existing code...
