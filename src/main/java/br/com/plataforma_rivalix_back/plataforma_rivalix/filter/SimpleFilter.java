@@ -60,7 +60,8 @@ public class SimpleFilter implements Filter {
             }
         } */
         // -----------------------------------------------------------------------
-        
+
+
         String path = httpRequest.getRequestURI();
         String method = httpRequest.getMethod();
 
