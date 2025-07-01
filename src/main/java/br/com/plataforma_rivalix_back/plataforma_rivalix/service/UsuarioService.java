@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.plataforma_rivalix_back.plataforma_rivalix.config.SecurityConstants;
 import br.com.plataforma_rivalix_back.plataforma_rivalix.model.Usuario;
@@ -44,6 +45,7 @@ public class UsuarioService {
 				.orElseThrow(() -> new RuntimeException("Usuário não encontrado com o e-mail: " + email));
 	}
 
+	@Transactional
 	public Usuario criarUsuario(Usuario usuario) {
 		if (repository.findByEmail(usuario.getEmail()).isPresent()) {
 			// Lançar ResponseStatusException com a mensagem desejada
