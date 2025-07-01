@@ -39,14 +39,17 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
+ @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOriginPatterns(List.of(
                 "https://rivalix-gaming.vercel.app",
-                "http://localhost:3000"));
+                "http://localhost:3000",
+                "https://plataforma-rivalix-gaming-24af3d5ab112.herokuapp.com" // Certifique-se de que todas as origens válidas estão aqui
+        ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
+        // LISTE OS CABEÇALHOS ESPECÍFICOS AQUI
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Accept")); // <-- ALTERADO!
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
