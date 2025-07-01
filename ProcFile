@@ -1,2 +1,1 @@
-web: java -Dserver.port=$PORT -jar target/plataforma-rivalix-0.0.1-SNAPSHOT.jar
-web: java -Xmx300m -XX:MaxMetaspaceSize=150m -jar target/plataforma-rivalix-0.0.1-SNAPSHOT.jar
+web: java -Dserver.port=$PORT -Xmx300m -XX:MaxMetaspaceSize=150m -jar target/plataforma-rivalix-0.0.1-SNAPSHOT.jar
