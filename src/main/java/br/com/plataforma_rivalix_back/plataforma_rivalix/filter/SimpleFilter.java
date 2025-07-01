@@ -15,12 +15,14 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+// Filtra cada requisição antes de passar para o controller, solicitando token para endpoints privados 
+
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE) // Garante que este filtro rode antes de outros filtros de segurança
 public class SimpleFilter implements Filter {
 
     // Injetando a origem permitida do application.properties para ser mais flexível
-    @Value("${cors.allowed.origin:http://localhost:5173}")
+    @Value("${cors.allowed-origins}")
     private String allowedOriginsConfig;
 
     @Override
@@ -28,13 +30,36 @@ public class SimpleFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+        
+        // --- Adicionar cabeçalhos CORS para todas as requisições (crucial para preflight) ---
+        // Pega o Origin da requisição
+        String origin = httpRequest.getHeader("Origin");
+        
+     // Verifica se o Origin da requisição está entre os Origins permitidos
+        // O allowedOriginsConfig é uma string separada por vírgulas, então precisamos verificar se contém o origin
+        if (origin != null) {
+            // Divide a string de allowedOriginsConfig em um array para verificar cada um
+            String[] allowedOriginsArray = allowedOriginsConfig.split(",");
+            boolean isAllowedOrigin = false;
+            for (String allowedOrigin : allowedOriginsArray) {
+                if (allowedOrigin.trim().equals(origin)) {
+                    isAllowedOrigin = true;
+                    break;
+                }
+            }
 
-        // Adiciona os headers de CORS em TODAS as respostas para garantir consistência.
-        // O WebConfig ainda pode ser usado para configurações mais complexas, mas isso resolve o preflight.
-        httpResponse.setHeader("Access-Control-Allow-Origin", allowedOriginsConfig);
-        httpResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
-        httpResponse.setHeader("Access-Control-Max-Age", "3600");
-        httpResponse.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, x-requested-with");
+            if (isAllowedOrigin) {
+                httpResponse.setHeader("Access-Control-Allow-Origin", origin);
+                httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                httpResponse.setHeader("Access-Control-Allow-Headers", "*"); // Permite todos os headers, ou liste os específicos do seu frontend
+                httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
+                httpResponse.setHeader("Access-Control-Max-Age", "3600"); // Cacheia a pré-checagem por 1 hora
+            } else {
+                // Opcional: Se o Origin não for permitido, você pode logar ou rejeitar aqui,
+                // mas o CorsFilter do Spring já faria isso se a requisição passasse.
+            }
+        }
+        // -----------------------------------------------------------------------
 
 
         String path = httpRequest.getRequestURI();

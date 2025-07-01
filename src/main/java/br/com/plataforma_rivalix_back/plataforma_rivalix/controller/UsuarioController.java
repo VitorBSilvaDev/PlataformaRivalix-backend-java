@@ -29,84 +29,84 @@ import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
+// "Porta de entrada" da aplicação, que recebe e envia dados ao frontend, chamando os serviços, processando a lógica e enviando
+// respostas de voltado (Return)
 
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
-	
+
 	private final UsuarioService usuarioService;
-	
-	
-	public UsuarioController (UsuarioService usuarioService) {
-		this.usuarioService = usuarioService;
+
+	public UsuarioController(UsuarioService usuarioService) {
+		this.usuarioService = usuarioService;	
 	}
-	
-	@GetMapping 
-	public ResponseEntity <List <Usuario>> listaUsuarios () {; 
+
+	@GetMapping
+	public ResponseEntity<List<Usuario>> listaUsuarios() {
+		;
 		return ResponseEntity.status(200).body(usuarioService.listarUsuario());
 	}
-	
-    // ========================================================================
-    // NOVO ENDPOINT DE PERFIL ADICIONADO AQUI
-    // ========================================================================
+
+	// ========================================================================
+	// NOVO ENDPOINT DE PERFIL ADICIONADO AQUI
+	// ========================================================================
 	@GetMapping("/perfil")
-    public ResponseEntity<UsuarioDTO> getUsuarioLogado(HttpServletRequest request) {
-        try {
-            // 1. Pega o token do cabeçalho "Authorization"
-            String authHeader = request.getHeader("Authorization");
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-            String token = authHeader.substring(7);
+	public ResponseEntity<UsuarioDTO> getUsuarioLogado(HttpServletRequest request) {
+		try {
+			// 1. Pega o token do cabeçalho "Authorization"
+			String authHeader = request.getHeader("Authorization");
+			if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			}
+			String token = authHeader.substring(7);
 
-            // 2. Valida e decodifica o JWT usando a chave secreta centralizada
-            Jws<Claims> claimsJws = Jwts.parserBuilder()
-                                        .setSigningKey(SecurityConstants.CHAVE_SECRETA)
-                                        .build()
-                                        .parseClaimsJws(token);
-            
-            String email = claimsJws.getBody().getSubject();
+			// 2. Valida e decodifica o JWT usando a chave secreta centralizada
+			Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(SecurityConstants.CHAVE_SECRETA).build()
+					.parseClaimsJws(token);
 
-            // 3. Usa o e-mail para buscar o usuário completo
-            Usuario usuario = usuarioService.buscarPorEmail(email); 
-            
-            // 4. Converte a entidade para DTO antes de enviar
-            UsuarioDTO usuarioDTO = new UsuarioDTO(usuario);
-            
-            return ResponseEntity.ok(usuarioDTO); // Retorna o DTO seguro
+			String email = claimsJws.getBody().getSubject();
 
-        } catch (Exception e) {
-            // Se o token for inválido/expirado, retorna não autorizado
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-    }
+			// 3. Usa o e-mail para buscar o usuário completo
+			Usuario usuario = usuarioService.buscarPorEmail(email);
+
+			// 4. Converte a entidade para DTO antes de enviar
+			UsuarioDTO usuarioDTO = new UsuarioDTO(usuario);
+
+			return ResponseEntity.ok(usuarioDTO); // Retorna o DTO seguro
+
+		} catch (Exception e) {
+			// Se o token for inválido/expirado, retorna não autorizado
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+	}
 
 	@PostMapping
-	public ResponseEntity <Usuario> criarUsuario(@Valid @RequestBody Usuario usuario) {
+	public ResponseEntity<Usuario> criarUsuario(@Valid @RequestBody Usuario usuario) {
 		return ResponseEntity.status(201).body(usuarioService.criarUsuario(usuario));
 	}
-	
+
 	@PutMapping
-	public ResponseEntity <Usuario> editarUsuario(@Valid @RequestBody Usuario usuario) {
+	public ResponseEntity<Usuario> editarUsuario(@Valid @RequestBody Usuario usuario) {
 		return ResponseEntity.status(200).body(usuarioService.editarUsuario(usuario));
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> excluirUsuario (@PathVariable Integer id) {
+	public ResponseEntity<?> excluirUsuario(@PathVariable Integer id) {
 		usuarioService.excluirUsuario(id);
 		return ResponseEntity.status(204).build();
 	}
-	
+
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public Map<String, String> handleValidationException(MethodArgumentNotValidException ex) {
 		Map<String, String> errors = new HashMap<>();
-		
+
 		ex.getBindingResult().getAllErrors().forEach((error) -> {
 			String fieldName = ((FieldError) error).getField();
 			String errorMessage = error.getDefaultMessage();
 			errors.put(fieldName, errorMessage);
-			
+
 		});
 		return errors;
 	}

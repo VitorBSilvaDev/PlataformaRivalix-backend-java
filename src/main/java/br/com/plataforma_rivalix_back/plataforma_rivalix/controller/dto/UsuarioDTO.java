@@ -1,9 +1,11 @@
-package br.com.plataforma_rivalix_back.plataforma_rivalix.controller.dto; // Crie um pacote 'dto' para isso
+package br.com.plataforma_rivalix_back.plataforma_rivalix.controller.dto;
 
 import br.com.plataforma_rivalix_back.plataforma_rivalix.model.Usuario;
-import lombok.Data; // Se estiver usando Lombok
+import lombok.Data; 
 
-@Data // Gera getters, setters, etc.
+// Para fins de segurança define um usuário com a senha omitida, para requisições seguras no front-end
+
+@Data 
 public class UsuarioDTO {
 	private Integer id;
     private String nome;

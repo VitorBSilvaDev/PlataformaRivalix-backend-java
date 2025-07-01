@@ -1,9 +1,10 @@
-package br.com.plataforma_rivalix_back.plataforma_rivalix.controller.dto; // Crie um pacote 'dto' para isso
+package br.com.plataforma_rivalix_back.plataforma_rivalix.controller.dto;
 
 import lombok.AllArgsConstructor; 
 import lombok.Data;
 import lombok.NoArgsConstructor; 
 
+// Após uma resposta bem sucedida ao fazer um login, define os atributos do token que será retornado e armazenado no front-end
 @Data
 @AllArgsConstructor 
 @NoArgsConstructor 
