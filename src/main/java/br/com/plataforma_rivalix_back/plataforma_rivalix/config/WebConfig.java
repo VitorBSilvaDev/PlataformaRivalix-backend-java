@@ -1,4 +1,4 @@
-package br.com.plataforma_rivalix_back.plataforma_rivalix.config;
+/* package br.com.plataforma_rivalix_back.plataforma_rivalix.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -19,4 +19,4 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowCredentials(true)
                 .maxAge(3600);
     }
-}
+} */
