@@ -4,22 +4,50 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-/**
- * Esta classe de configuração é usada para definir Beans que serão gerenciados pelo Spring.
- * Beans são objetos que formam a espinha dorsal da sua aplicação.
- */
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Value;
+
+
 @Configuration
 public class SecurityConfig {
 
-    /**
-     * Este método define como o Spring deve criar um objeto PasswordEncoder.
-     * A anotação @Bean diz ao Spring: "Quando alguém pedir por um PasswordEncoder,
-     * execute este método e use o objeto que ele retorna".
-     * @return uma instância de BCryptPasswordEncoder, que é uma implementação segura de PasswordEncoder.
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    // Adicione este bean:
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .cors() // Habilita CORS
+            .and()
+            .csrf().disable();
+        // ...outras configurações de segurança...
+        return http.build();
+    }
+
+    // Adicione este bean para usar as origens do seu properties:
+    @Value("${cors.allowed-origins}")
+    private String allowedOrigins;
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }
+// ...existing code...

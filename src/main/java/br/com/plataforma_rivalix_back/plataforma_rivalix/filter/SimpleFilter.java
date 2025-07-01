@@ -61,15 +61,6 @@ public class SimpleFilter implements Filter {
         } */
         // -----------------------------------------------------------------------
         
-         // Adicione estes cabeçalhos SEMPRE
-        String origin = httpRequest.getHeader("Origin");
-        if (origin != null) {
-            httpResponse.setHeader("Access-Control-Allow-Origin", origin);
-            httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            httpResponse.setHeader("Access-Control-Allow-Headers", "*");
-            httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
-        }
-
         String path = httpRequest.getRequestURI();
         String method = httpRequest.getMethod();
 
