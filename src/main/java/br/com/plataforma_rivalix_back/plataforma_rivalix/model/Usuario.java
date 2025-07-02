@@ -41,11 +41,8 @@ public class Usuario {
 	@Column(name = "email", length = 50, nullable = false, unique = true)
 	private String email;
 
-
 	@NotBlank(message = "A senha é obrigatória")
-	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+=\\-\\[\\]{};':\"|,.<>/?]).{8,30}$",
-    //                                                                                              ^---- Adicionado . {8,30}$
-    message = "A senha deve ter entre 8 e 30 caracteres, conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.")
+	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+=\\-\\[\\]{};':\"|,.<>/?]).{8,30}$", message = "A senha deve ter entre 8 e 30 caracteres, conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.")
 	@Column(name = "senha", columnDefinition = "TEXT", nullable = false)
 	private String senha;
 }
