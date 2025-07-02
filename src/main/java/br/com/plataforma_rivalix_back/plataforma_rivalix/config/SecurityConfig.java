@@ -1,5 +1,8 @@
 package br.com.plataforma_rivalix_back.plataforma_rivalix.config;
 
+import br.com.plataforma_rivalix_back.plataforma_rivalix.filter.JwtAuthenticationFilter; // Importar o filtro
+
+import java.util.Arrays; // Importar Arrays
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
@@ -12,8 +15,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-// IMPORTANTE: Adicione esta importação para o CSRF
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter; // Importar para adicionar o filtro JWT
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 
@@ -29,31 +31,32 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors().and() // Habilita CORS via CorsConfigurationSource
-                // === NOVO CSRF: Comente o .csrf().disable() e use esta configuração ===
+                .cors().and()
                 .csrf(csrf -> csrf
-                    .ignoringRequestMatchers("/api/auth/**") // Ignora CSRF para todas as rotas de autenticação
-                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // Recomendado para SPAs
+                    .ignoringRequestMatchers("/api/auth/**")
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 )
-                // === FIM DO NOVO CSRF ===
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Endpoint de registro e login são públicos
-                        .anyRequest().authenticated()); // Todas as outras requisições precisam ser autenticadas
-
-        // Certifique-se de que não há nenhuma linha adicionando SimpleFilter aqui.
-        // Ele já foi removido, certo?
+                    .requestMatchers("/api/auth/**").permitAll()
+                    .anyRequest().authenticated())
+                .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // ADICIONAR ESTA LINHA
 
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        // ... (Seu código CorsConfigurationSource que está funcionando)
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of(
+        
+        config.setAllowedOriginPatterns(Arrays.asList(
                 "https://rivalix-gaming.vercel.app",
+                "https://plataforma-rivalix-gaming-24af3d5ab112.herokuapp.com",
                 "http://localhost:3000",
-                "https://plataforma-rivalix-gaming-24af3d5ab112.herokuapp.com"
+                "http://localhost:5173",
+                "http://localhost:5174",
+                "http://127.0.0.1:3000",
+                "http://127.0.0.1:5173",
+                "http://127.0.0.1:5174"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Accept"));
