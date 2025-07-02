@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String username = claims.getSubject(); // O email do usuário que você salvou como Subject
 
             // Se o token for válido, autentica o usuário no contexto de segurança do Spring
-            // Por simplicidade, estamos usando uma authority vazia ou genérica aqui.
+            // Por simplicidade, está sendo usado uma authority vazia ou genérica aqui.
             // Em uma aplicação real, você buscaria as roles/permissões do usuário do banco de dados.
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                     username, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")) // Exemplo de role

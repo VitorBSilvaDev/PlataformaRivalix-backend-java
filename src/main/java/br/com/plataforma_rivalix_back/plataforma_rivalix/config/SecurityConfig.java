@@ -1,8 +1,8 @@
 package br.com.plataforma_rivalix_back.plataforma_rivalix.config;
 
-import br.com.plataforma_rivalix_back.plataforma_rivalix.filter.JwtAuthenticationFilter; // Importar o filtro
+import br.com.plataforma_rivalix_back.plataforma_rivalix.filter.JwtAuthenticationFilter;
 
-import java.util.Arrays; // Importar Arrays
+import java.util.Arrays; 
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
@@ -15,7 +15,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter; // Importar para adicionar o filtro JWT
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter; 
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 

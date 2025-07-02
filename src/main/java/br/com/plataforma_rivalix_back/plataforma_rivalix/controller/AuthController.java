@@ -32,7 +32,7 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
-	    // Agora, autenticarUsuario retorna o JWT completo
+	    // autenticarUsuario retorna o JWT completo
 	    String jwtToken = usuarioService.autenticarUsuario(loginRequest.getEmail(), loginRequest.getSenha());
 
 	    // Se nenhuma exceção foi lançada, o token é válido

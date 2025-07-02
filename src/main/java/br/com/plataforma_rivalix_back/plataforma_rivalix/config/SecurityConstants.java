@@ -11,13 +11,13 @@ import jakarta.annotation.PostConstruct;
 public class SecurityConstants {
 
     // Define um valor padrão para desenvolvimento local.
-    // Em produção, a variável de ambiente 'JWT_SECRET' no Heroku deve sobrescrever isso.
+  
     @Value("${jwt.secret:minha_chave_secreta_super_segura_e_longa_para_testes_PADRAO_DEV}")
     private String secretString;
 
     public static SecretKey CHAVE_SECRETA; // Torna-se não-final para ser atribuída
 
-    @PostConstruct // Este método será executado após a injeção da dependência
+    @PostConstruct // Método que será executado após a injeção da dependência
     public void init() {
         CHAVE_SECRETA = Keys.hmacShaKeyFor(secretString.getBytes());
     }
