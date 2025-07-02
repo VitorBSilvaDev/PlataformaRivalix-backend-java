@@ -24,7 +24,7 @@ public class Usuario {
 	private Integer id;
 
 	@NotBlank(message = "O nome é obrigatório") // Define que o campo não pode conter string vazia " " nem ser nulo ""
-	@Size(min = 3, max = 12, message = "O nome deve ter no mínimo 3 caracteres e máximo 12 caracteres")
+	@Size(min = 3, max = 12, message = "O nome deve ter no mínimo 3 caracteres e máximo 26 caracteres")
 	@Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s']+$", message = "O nome deve conter apenas letras e espaços.")
 	@Column(name = "nome", length = 200, nullable = false)
 	private String nome;
