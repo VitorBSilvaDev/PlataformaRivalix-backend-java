@@ -37,7 +37,6 @@ public class Usuario {
 
 	@Email(message = "Insira um e-mail válido")
 	@NotBlank(message = "O e-mail é obrigatório")
-	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+=\\-\\[\\]{};':\"|,.<>/?]).*$", message = "A senha deve conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.")
 	@Size(max = 50, message = "O e-mail pode ter no máximo 50 caracteres")
 	@Column(name = "email", length = 50, nullable = false, unique = true)
 	private String email;
