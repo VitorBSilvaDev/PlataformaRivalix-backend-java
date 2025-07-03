@@ -41,7 +41,7 @@ public class AuthController {
 
 	@PostMapping("/register")
 	public ResponseEntity<Usuario> registerUser(@Valid @RequestBody Usuario usuario) {
-		// REMOVA O TRY-CATCH AQUI.
+
 		// A ResponseStatusException lançada pelo service para e-mail duplicado
 		// será capturada pelo @ExceptionHandler(ResponseStatusException.class).
 		Usuario novoUsuario = usuarioService.criarUsuario(usuario);
@@ -68,7 +68,7 @@ public class AuthController {
 	        sb.append(fieldName).append(": ").append(errorMessage);
 	    });
 	    
-	    // Adicione a chave "message" para ser capturada pelo frontend
+	    // Adiciona a chave "message" para ser capturada pelo frontend
 	    Map<String, String> responseBody = new HashMap<>();
 	    responseBody.put("message", sb.toString()); // Mensagem geral para o alert
 	    responseBody.put("details", errors.toString()); // Detalhes dos erros por campo (opcional, para console.error)

@@ -30,7 +30,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 // "Porta de entrada" da aplicação, que recebe e envia dados ao frontend, chamando os serviços, processando a lógica e enviando
-// respostas de voltado (Return)
+// respostas de (Return)
 
 @RestController
 @RequestMapping("/usuarios")
@@ -48,9 +48,6 @@ public class UsuarioController {
 		return ResponseEntity.status(200).body(usuarioService.listarUsuario());
 	}
 
-	// ========================================================================
-	// NOVO ENDPOINT DE PERFIL ADICIONADO AQUI
-	// ========================================================================
 	@GetMapping("/perfil")
 	public ResponseEntity<UsuarioDTO> getUsuarioLogado(HttpServletRequest request) {
 		try {

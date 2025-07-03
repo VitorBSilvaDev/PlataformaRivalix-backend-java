@@ -54,9 +54,7 @@ public class UsuarioService {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "Este e-mail já está cadastrado.");
 		}
 
-		// NOVA VERIFICAÇÃO PARA nomeUsuario
-		if (repository.findByNomeUsuario(usuario.getNomeUsuario()).isPresent()) { // Você precisará criar
-																					// findByNomeUsuario no seu IUsuario
+		if (repository.findByNomeUsuario(usuario.getNomeUsuario()).isPresent()) { 
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "Este nome de usuário já está em uso.");
 		}
 
@@ -102,7 +100,6 @@ public class UsuarioService {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email ou senha inválidos.");
 		}
 		// Se chegou aqui, as credenciais são válidas.
-		// O token JWT será gerado no controller, ou você pode gerá-lo aqui e retornar.
 		long agora = System.currentTimeMillis();
 		long expiracao = agora + 3600000; // Expira em 1 hora
 
@@ -110,21 +107,9 @@ public class UsuarioService {
 				.setSubject(email) // O subject geralmente é o identificador único do usuário
 				.setIssuedAt(new Date(agora))
 				.setExpiration(new Date(expiracao))
-				.signWith(SecurityConstants.CHAVE_SECRETA) // Use a chave secreta
+				.signWith(SecurityConstants.CHAVE_SECRETA) // Chave secreta será usada
 				.compact();
 
-		return jwtToken; // Retorne o JWT gerado
+		return jwtToken; // Retorna o JWT gerado
 	}
-
-	/*
-	 * public Boolean validarSenha(Usuario usuarioParaValidar) { Optional<Usuario>
-	 * usuarioOptional = repository.findByEmail(usuarioParaValidar.getEmail());
-	 * 
-	 * if (usuarioOptional.isEmpty()) { return false; }
-	 * 
-	 * Usuario usuarioDoBanco = usuarioOptional.get();
-	 * 
-	 * return passwordEncoder.matches(usuarioParaValidar.getSenha(),
-	 * usuarioDoBanco.getSenha()); }
-	 */
 }

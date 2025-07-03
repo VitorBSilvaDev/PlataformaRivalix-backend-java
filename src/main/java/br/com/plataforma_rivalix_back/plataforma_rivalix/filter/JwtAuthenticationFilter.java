@@ -10,10 +10,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.OncePerRequestFilter; // Importar
-
+import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
-import java.util.Collections; // Importar Collections para criar uma lista vazia de authorities
+import java.util.Collections; 
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -38,11 +37,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .parseClaimsJws(token)
                     .getBody();
 
-            String username = claims.getSubject(); // O email do usuário que você salvou como Subject
+            String username = claims.getSubject(); // O email do usuário que foi salvo como Subject
 
             // Se o token for válido, autentica o usuário no contexto de segurança do Spring
             // Por simplicidade, está sendo usado uma authority vazia ou genérica aqui.
-            // Em uma aplicação real, você buscaria as roles/permissões do usuário do banco de dados.
+            // Em uma aplicação real, seria buscado as roles/permissões do usuário do banco de dados.
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                     username, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")) // Exemplo de role
             );
